@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Sistem Keuangan Warga</title>
+    <style>
+        :root {
+          --primary: #1e293b;
+          --primary-accent: #3b82f6;
+          --accent: #10b981;
+          --accent-hover: #059669;
+          --danger: #ef4444;
+          --bg: #e2e8f0;
+          --card-bg: #ffffff;
+          --border-color: #cbd5e1;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { 
+          background: var(--bg); 
+          padding: 15px; 
+          padding-bottom: 90px;
+          display: flex; 
+          flex-direction: column; 
+          align-items: center; 
+          color: #334155; 
+        }
+
+        .card {
+          background: var(--card-bg);
+          width: 100%;
+          max-width: 1100px;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+          border: 1px solid #e2e8f0;
+        }
+
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+
+        /* ACTION BAR & FILTER SEJAJAR (1 BARIS DI ATAS TABEL) */
+        .top-action-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 12px;
+          width: 100%;
+        }
+
+        .filter-group-inline {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: #f1f5f9;
+          padding: 4px 8px;
+          border-radius: 8px;
+          border: 1px solid var(--border-color);
+        }
+
+        .filter-group-inline label {
+          font-size: 0.8rem;
+          font-weight: 700;
+          color: var(--primary);
+          margin-bottom: 0;
+          white-space: nowrap;
+        }
+
+        .filter-group-inline select {
+          padding: 5px 8px;
+          border-radius: 6px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          border: 1px solid #cbd5e1;
+          background: #ffffff;
+          color: #1e293b;
+          outline: none;
+          cursor: pointer;
+        }
+
+        button.btn-action {
+          padding: 6px 12px;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 700;
+          font-size: 0.8rem;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+          white-space: nowrap;
+          transition: all 0.1s ease;
+        }
+
+        .btn-print { 
+          background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+          box-shadow: 0 2.5px 0px #075985;
+        }
+        .btn-save { 
+          background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+          box-shadow: 0 3px 0px #047857;
+        }
+        .btn-cancel {
+          background: linear-gradient(180deg, #64748b 0%, #475569 100%);
+          box-shadow: 0 3px 0px #334155;
+        }
+
+        button.btn-action:active {
+          transform: translateY(2px);
+          box-shadow: none !important;
+        }
+
+        /* BOTTOM NAVBAR 3D */
+        .bottom-nav {
+          position: fixed;
+          bottom: 8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: 420px;
+          background: #ffffff;
+          border-radius: 14px;
+          padding: 6px 8px;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          gap: 6px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+          z-index: 900;
+          border: 1px solid #e2e8f0;
+        }
+
+        .nav-item {
+          flex: 1;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          padding: 7px 4px;
+          border: none;
+          border-radius: 9px;
+          font-size: 0.7rem;
+          font-weight: 700;
+          cursor: pointer;
+          color: white;
+          text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+          transition: all 0.1s ease;
+        }
+
+        .nav-item .nav-icon { font-size: 0.85rem; }
+
+        .btn-nav-iuran {
+          background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+          box-shadow: 0 2.5px 0px #1d4ed8;
+        }
+        .btn-nav-iuran.active {
+          background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-nav-add-iuran {
+          background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+          box-shadow: 0 2.5px 0px #b45309;
+        }
+
+        .btn-nav-kas {
+          background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+          box-shadow: 0 2.5px 0px #6d28d9;
+        }
+        .btn-nav-kas.active {
+          background: linear-gradient(180deg, #6d28d9 0%, #5b21b6 100%);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-nav-add-kas {
+          background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+          box-shadow: 0 2.5px 0px #047857;
+        }
+
+        /* MODAL POPUP */
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(15, 23, 42, 0.6);
+          backdrop-filter: blur(4px);
+          display: none;
+          justify-content: center;
+          align-items: center;
+          z-index: 999;
+          padding: 15px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+          background: #ffffff;
+          width: 100%;
+          max-width: 500px;
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+          border: 1px solid #cbd5e1;
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 18px;
+          border-bottom: 2px solid #f1f5f9;
+          padding-bottom: 10px;
+        }
+
+        .modal-header h3 { color: var(--primary); font-size: 1.15rem; }
+
+        .form-grid-popup {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          margin-bottom: 20px;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+        label { font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: #475569; }
+
+        input, select {
+          padding: 10px 12px;
+          border: 1px solid #cbd5e1;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          font-weight: 500;
+          background: linear-gradient(145deg, #f1f5f9, #ffffff);
+          color: #1e293b;
+          outline: none;
+        }
+
+        .summary-box {
+          background: #f1f5f9;
+          border: 1px solid #cbd5e1;
+          padding: 10px 14px;
+          font-size: 8.5pt;
+          font-weight: 700;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          margin-bottom: 12px;
+          border-radius: 6px;
+          color: var(--primary);
+        }
+        @media (min-width: 600px) { .summary-box { flex-direction: row; justify-content: space-between; } }
+
+        .columns-wrapper { display: flex; flex-direction: column; gap: 0; }
+        .column { width: 100%; }
+
+        table.data-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 8.5pt;
+          table-layout: fixed;
+          margin-bottom: 10px;
+        }
+        table.data-table th, table.data-table td {
+          border: 1px solid #cbd5e1;
+          padding: 6px;
+          text-align: left;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        table.data-table th { background: var(--primary); color: white; text-align: center; font-size: 8.5pt; font-weight: 600; }
+        table.data-table tr:nth-child(even) { background: #f8fafc; }
+
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+        .text-green { color: var(--accent); font-weight: bold; }
+        .text-red { color: var(--danger); font-weight: bold; }
+
+        .signature-area { 
+          margin-top: 14px; 
+          display: flex; 
+          justify-content: space-between; 
+          align-items: flex-end; 
+          font-size: 8.5pt; 
+          text-align: center; 
+        }
+        .sign-box { width: 40%; color: #334155; }
+        .version-box { width: 20%; font-size: 11px; color: #94a3b8; font-family: monospace; padding-bottom: 4px; }
+        .sign-space { height: 30px; }
+
+        @media (min-width: 850px) {
+          .columns-wrapper.two-cols { flex-direction: row; gap: 16px; }
+          .columns-wrapper.two-cols .column { flex: 1; }
+          table.data-table { font-size: 8pt; margin-bottom: 0; }
+          table.data-table th, table.data-table td { padding: 4px 5px; }
+        }
+
+        @media print {
+          @page { size: A4 landscape; margin: 6mm 8mm; }
+          body { background: white; padding: 0; }
+          .no-print, .bottom-nav, .modal-overlay { display: none !important; }
+          .card { box-shadow: none; padding: 0; width: 100%; max-width: 100%; border: none; }
+          .summary-box { flex-direction: row !important; justify-content: space-between !important; font-size: 8pt; padding: 4px 8px; margin-bottom: 6px; }
+          .columns-wrapper.two-cols { flex-direction: row !important; gap: 12px !important; }
+          .columns-wrapper.two-cols .column { flex: 1 !important; width: 50% !important; }
+          table.data-table { font-size: 7.2pt !important; margin-bottom: 0 !important; }
+          table.data-table th, table.data-table td { padding: 1.8pt 3pt !important; }
+          .signature-area { font-size: 7.5pt; margin-top: 6px; }
+          .sign-space { height: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <!-- HALAMAN 1: IURAN WARGA -->
+    <div id="page-iuran" class="page-content active">
+        <div class="print-area">
+            <div style="text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
+                <h1 style="font-size: 13pt; text-transform: uppercase;">REKAPITULASI PEMBAYARAN IURAN WARGA</h1>
+                <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
+            </div>
+
+            
+
+            <div class="summary-box">
+                <span>Total : <span id="total-warga">0</span> Orang</span>
+                <span>Total Terkumpul Periode Ini: <span id="total-iuran-nominal">Rp 0</span></span>
+            </div>
+          <!-- ACTION BAR & FILTER SEJAJAR 1 BARIS -->
+            <div class="no-print top-action-bar">
+                <div class="filter-group-inline">
+                    <label>📅 Periode:</label>
+                    <select class="select-bulan" onchange="filterDataBulan()"></select>
+                    <select class="select-tahun" onchange="filterDataBulan()"></select>
+                </div>
+                <button type="button" class="btn-action btn-print" onclick="window.print()">🖨️ Cetak / Save PDF</button>
+            </div>
+            <div class="columns-wrapper two-cols">
+                <div class="column">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 8%;">No</th>
+                            <th style="width: 32%;">Nama</th>
+                            <th style="width: 20%;">Jenis</th>
+                            <th style="width: 20%;">Nominal</th>
+                            <th style="width: 20%;">Ket.</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabel-iuran-kiri"></tbody>
+                    </table>
+                </div>
+                <div class="column">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 8%;">No</th>
+                            <th style="width: 32%;">Nama</th>
+                            <th style="width: 20%;">Jenis</th>
+                            <th style="width: 20%;">Nominal</th>
+                            <th style="width: 20%;">Ket.</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabel-iuran-kanan"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="signature-area">
+                <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
+                <div class="version-box">v1.2</div>
+                <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HALAMAN 2: KAS PENGELUARAN & MASUK -->
+    <div id="page-pengeluaran" class="page-content">
+        <div class="print-area">
+            <div style="text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
+                <h1 style="font-size: 13pt; text-transform: uppercase;">LAPORAN PEMBUKUAN KASS (MASUK / KELUAR)</h1>
+                <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
+            </div>
+
+            <!-- ACTION BAR & FILTER SEJAJAR 1 BARIS -->
+            <div class="no-print top-action-bar">
+                <div class="filter-group-inline">
+                    <label>📅 Periode:</label>
+                    <select class="select-bulan" onchange="filterDataBulan()"></select>
+                    <select class="select-tahun" onchange="filterDataBulan()"></select>
+                </div>
+                <button type="button" class="btn-action btn-print" onclick="window.print()">🖨️ Cetak / Save PDF</button>
+            </div>
+
+            <div class="summary-box">
+                <span>Masuk Periode Ini: <span id="kas-total-masuk" class="text-green">Rp 0</span> | Keluar: <span id="kas-total-keluar" class="text-red">Rp 0</span></span>
+                <span>SISA SALDO KAS (AKUMULASI): <span id="kas-sisa-saldo">Rp 0</span></span>
+            </div>
+
+            <div class="columns-wrapper">
+                <div class="column">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 6%;">No</th>
+                            <th style="width: 15%;">Tanggal</th>
+                            <th style="width: 39%;">Keterangan</th>
+                            <th style="width: 13%;">Masuk (+)</th>
+                            <th style="width: 13%;">Keluar (-)</th>
+                            <th style="width: 14%;">Sisa Saldo</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabel-kas-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="signature-area">
+                <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
+                <div class="version-box">v1.2</div>
+                <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- BOTTOM NAVBAR 3D MINIMALIS -->
+<div class="bottom-nav no-print">
+    <button class="nav-item btn-nav-iuran active" id="nav-btn-iuran" onclick="switchPage('iuran')">
+        <span class="nav-icon">📋</span>
+        <span>Iuran</span>
+    </button>
+    
+    <button class="nav-item btn-nav-add-iuran" onclick="openModal('modal-iuran')">
+        <span class="nav-icon">➕</span>
+        <span>Iuran</span>
+    </button>
+    
+    <button class="nav-item btn-nav-kas" id="nav-btn-kas" onclick="switchPage('pengeluaran')">
+        <span class="nav-icon">💸</span>
+        <span>Kas</span>
+    </button>
+    
+    <button class="nav-item btn-nav-add-kas" onclick="openModal('modal-pengeluaran')">
+        <span class="nav-icon">🔄</span>
+        <span>Mutasi</span>
+    </button>
+</div>
+
+<!-- MODAL POPUP INPUT 1: IURAN -->
+<div id="modal-iuran" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Input Transaksi Iuran Warga</h3>
+            <button style="border:none; background:none; font-size:1.2rem; cursor:pointer;" onclick="closeModal('modal-iuran')">✖</button>
+        </div>
+        <form id="form-iuran">
+            <div class="form-grid-popup">
+                <div class="form-group">
+                    <label>Nama Warga / Donatur</label>
+                    <input type="text" id="iuran-nama" placeholder="Ketik / cari nama..." list="opsi-warga" autocomplete="off" required>
+                    <datalist id="opsi-warga"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Iuran</label>
+                    <input type="text" id="iuran-jenis" placeholder="Kebersihan / Kas RT" list="opsi-iuran" required>
+                    <datalist id="opsi-iuran">
+                        <option value="Iuran Kampung">
+                        <option value="Iuran Agustusan">
+                        <option value="Iuran Keamanan">
+                        <option value="Donasi / Sumbangan">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label>Nominal (Rp)</label>
+                    <input type="number" id="iuran-nominal" placeholder="25000" min="1000" required>
+                </div>
+                <div class="form-group">
+                    <label>Keterangan / Catatan</label>
+                    <input type="text" id="iuran-ket" placeholder="Lunas">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn-action btn-cancel" style="flex:1;" onclick="closeModal('modal-iuran')">Batal</button>
+                <button type="submit" class="btn-action btn-save" style="flex:1;" id="btn-save-iuran">💾 Simpan Data</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL POPUP INPUT 2: KAS -->
+<div id="modal-pengeluaran" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Input Mutasi Kas Umum</h3>
+            <button style="border:none; background:none; font-size:1.2rem; cursor:pointer;" onclick="closeModal('modal-pengeluaran')">✖</button>
+        </div>
+        <form id="form-pengeluaran">
+            <div class="form-grid-popup">
+                <div class="form-group">
+                    <label>Keterangan Transaksi</label>
+                    <input type="text" id="peng-ket" placeholder="Misal: Beli Lampu Jalan" required>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Transaksi</label>
+                    <select id="peng-tipe" required>
+                        <option value="keluar">🔴 Pengeluaran (-)</option>
+                        <option value="masuk">🟢 Pemasukan (+)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nominal (Rp)</label>
+                    <input type="number" id="peng-nominal" placeholder="50000" min="1000" required>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn-action btn-cancel" style="flex:1;" onclick="closeModal('modal-pengeluaran')">Batal</button>
+                <button type="submit" class="btn-action btn-save" style="flex:1;" id="btn-save-peng">💾 Simpan Kas</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyfw1-HWvjZuABpGs62fJIbUnfUwE5EuvzcSAmBRwFy0JL1FRcrcZCL0fs5AliNESXR/exec";
+
+    let listWargaGlobal = [];
+    let transaksiIuranGlobal = [];
+    let transaksiPengeluaranGlobal = [];
+
+    const namaBulanList = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    const formatRupiah = (val) => 'Rp ' + Number(val).toLocaleString('id-ID');
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    function switchPage(page) {
+      document.getElementById('nav-btn-iuran').classList.remove('active');
+      document.getElementById('nav-btn-kas').classList.remove('active');
+      document.querySelectorAll('.page-content').forEach(pg => pg.classList.remove('active'));
+
+      if (page === 'iuran') {
+        document.getElementById('nav-btn-iuran').classList.add('active');
+        document.getElementById('page-iuran').classList.add('active');
+      } else {
+        document.getElementById('nav-btn-kas').classList.add('active');
+        document.getElementById('page-pengeluaran').classList.add('active');
+      }
+    }
+
+    function initDropdownBulan() {
+      const selBulanList = document.querySelectorAll('.select-bulan');
+      const selTahunList = document.querySelectorAll('.select-tahun');
+      const now = new Date();
+
+      selBulanList.forEach(selBulan => {
+        selBulan.innerHTML = '';
+        namaBulanList.forEach((b, idx) => {
+          const opt = document.createElement('option');
+          opt.value = idx;
+          opt.textContent = b;
+          if (idx === now.getMonth()) opt.selected = true;
+          selBulan.appendChild(opt);
+        });
+      });
+
+      selTahunList.forEach(selTahun => {
+        selTahun.innerHTML = '';
+        const currYear = now.getFullYear();
+        for (let y = currYear - 2; y <= currYear + 1; y++) {
+          const opt = document.createElement('option');
+          opt.value = y;
+          opt.textContent = y;
+          if (y === currYear) opt.selected = true;
+          selTahun.appendChild(opt);
+        }
+      });
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        listWargaGlobal = data.warga || [];
+        transaksiIuranGlobal = data.transaksiIuran || [];
+        transaksiPengeluaranGlobal = data.transaksiPengeluaran || [];
+
+        const datalistWarga = document.getElementById('opsi-warga');
+        datalistWarga.innerHTML = '';
+        listWargaGlobal.forEach(nama => {
+          const opt = document.createElement('option');
+          opt.value = nama;
+          datalistWarga.appendChild(opt);
+        });
+
+        filterDataBulan();
+      } catch (err) {
+        console.error("Gagal memuat data:", err);
+      }
+    }
+
+    function filterDataBulan(e) {
+      // Sinkronisasi nilai dropdown antara halaman Iuran dan Kas
+      const activeTab = document.querySelector('.page-content.active');
+      const activeBulan = activeTab.querySelector('.select-bulan').value;
+      const activeTahun = activeTab.querySelector('.select-tahun').value;
+
+      document.querySelectorAll('.select-bulan').forEach(s => s.value = activeBulan);
+      document.querySelectorAll('.select-tahun').forEach(s => s.value = activeTahun);
+
+      const bIdx = parseInt(activeBulan);
+      const thn = parseInt(activeTahun);
+      const strPeriode = `${namaBulanList[bIdx]} ${thn}`;
+
+      document.querySelectorAll('.tgl-rekap').forEach(el => el.textContent = strPeriode);
+
+      renderTabelIuran(bIdx, thn);
+      renderTabelPengeluaran(bIdx, thn);
+    }
+
+    function renderTabelIuran(blnIdx, thn) {
+      const tbodyKiri = document.getElementById('tabel-iuran-kiri');
+      const tbodyKanan = document.getElementById('tabel-iuran-kanan');
+      tbodyKiri.innerHTML = ''; tbodyKanan.innerHTML = '';
+
+      let totalAkumulasi = 0;
+      let daftarTampil = [...listWargaGlobal];
+
+      const filteredIuran = transaksiIuranGlobal.filter(tx => {
+        if (!tx[0]) return false;
+        const d = new Date(tx[0]);
+        return d.getMonth() === blnIdx && d.getFullYear() === thn;
+      });
+
+      filteredIuran.forEach(tx => {
+        if (tx[1] && !daftarTampil.includes(tx[1])) daftarTampil.push(tx[1]);
+      });
+
+      const midIndex = Math.ceil(daftarTampil.length / 2);
+
+      daftarTampil.forEach((nama, idx) => {
+        const tx = filteredIuran.filter(t => t[1] === nama).pop();
+        const jenis = tx ? tx[2] : '-';
+        const nominal = tx ? Number(tx[3]) : 0;
+        const ket = (tx && tx[4]) ? tx[4] : '-';
+        totalAkumulasi += nominal;
+
+        const rowHTML = `
+          <tr>
+            <td class="text-center">${idx + 1}</td>
+            <td><b>${nama}</b></td>
+            <td>${jenis}</td>
+            <td class="text-right">${nominal > 0 ? formatRupiah(nominal) : '-'}</td>
+            <td>${ket}</td>
+          </tr>
+        `;
+
+        if (idx < midIndex) tbodyKiri.innerHTML += rowHTML;
+        else tbodyKanan.innerHTML += rowHTML;
+      });
+
+      document.getElementById('total-warga').textContent = daftarTampil.length;
+      document.getElementById('total-iuran-nominal').textContent = formatRupiah(totalAkumulasi);
+    }
+
+    function renderTabelPengeluaran(blnIdx, thn) {
+      const tbody = document.getElementById('tabel-kas-body');
+      tbody.innerHTML = '';
+
+      let totalMasukBulanIni = 0;
+      let totalKeluarBulanIni = 0;
+      let saldoSisaAkumulasi = 0;
+
+      transaksiPengeluaranGlobal.forEach((tx) => {
+        const d = new Date(tx[0]);
+        const masuk = Number(tx[2]) || 0;
+        const keluar = Number(tx[3]) || 0;
+
+        saldoSisaAkumulasi += (masuk - keluar);
+
+        if (d.getMonth() === blnIdx && d.getFullYear() === thn) {
+          totalMasukBulanIni += masuk;
+          totalKeluarBulanIni += keluar;
+
+          const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
+          const ket = tx[1];
+
+          tbody.innerHTML += `
+            <tr>
+              <td class="text-center">${tbody.children.length + 1}</td>
+              <td class="text-center">${tglStr}</td>
+              <td><b>${ket}</b></td>
+              <td class="text-right text-green">${masuk > 0 ? formatRupiah(masuk) : '-'}</td>
+              <td class="text-right text-red">${keluar > 0 ? formatRupiah(keluar) : '-'}</td>
+              <td class="text-right"><b>${formatRupiah(saldoSisaAkumulasi)}</b></td>
+            </tr>
+          `;
+        }
+      });
+
+      document.getElementById('kas-total-masuk').textContent = formatRupiah(totalMasukBulanIni);
+      document.getElementById('kas-total-keluar').textContent = formatRupiah(totalKeluarBulanIni);
+      document.getElementById('kas-sisa-saldo').textContent = formatRupiah(saldoSisaAkumulasi);
+    }
+
+    document.getElementById('form-iuran').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-iuran');
+      btn.disabled = true; btn.textContent = "⏳ Menyimpan...";
+
+      const payload = {
+        mode: 'iuran',
+        nama: document.getElementById('iuran-nama').value,
+        jenisIuran: document.getElementById('iuran-jenis').value,
+        nominal: document.getElementById('iuran-nominal').value,
+        keterangan: document.getElementById('iuran-ket').value
+      };
+
+      try {
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        alert("✅ Transaksi Iuran Warga Berhasil Disimpan!");
+        document.getElementById('form-iuran').reset();
+        closeModal('modal-iuran');
+        setTimeout(loadData, 1000);
+      } catch (err) { alert("❌ Gagal menyimpan."); }
+      finally { btn.disabled = false; btn.textContent = "💾 Simpan Data"; }
+    });
+
+    document.getElementById('form-pengeluaran').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-peng');
+      btn.disabled = true; btn.textContent = "⏳ Menyimpan...";
+
+      const payload = {
+        mode: 'pengeluaran',
+        keterangan: document.getElementById('peng-ket').value,
+        tipe: document.getElementById('peng-tipe').value,
+        nominal: document.getElementById('peng-nominal').value
+      };
+
+      try {
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        alert("✅ Transaksi Kas Berhasil Disimpan!");
+        document.getElementById('form-pengeluaran').reset();
+        closeModal('modal-pengeluaran');
+        setTimeout(loadData, 1000);
+      } catch (err) { alert("❌ Gagal menyimpan."); }
+      finally { btn.disabled = false; btn.textContent = "💾 Simpan Kas"; }
+    });
+
+    initDropdownBulan();
+    loadData();
+</script>
+
+</body>
+</html>
