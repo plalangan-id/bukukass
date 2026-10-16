@@ -239,6 +239,34 @@
           outline: none;
         }
 
+        /* AKSES CEPAT NOMINAL (MINI & COMPACT) */
+        .quick-nominal {
+          display: flex;
+          gap: 4px;
+          margin-top: 6px;
+          width: 100%;
+        }
+
+        .btn-quick {
+          flex: 1;
+          padding: 4px 2px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          background: #f1f5f9;
+          border: 1px solid #cbd5e1;
+          color: #334155;
+          border-radius: 5px;
+          cursor: pointer;
+          text-align: center;
+          transition: all 0.1s ease;
+        }
+
+        .btn-quick:hover, .btn-quick:active {
+          background: #3b82f6;
+          color: #ffffff;
+          border-color: #2563eb;
+        }
+
         .summary-box {
           background: #f1f5f9;
           border: 1px solid #cbd5e1;
@@ -326,13 +354,12 @@
                 <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
             </div>
 
-            
-
             <div class="summary-box">
                 <span>Total : <span id="total-warga">0</span> Orang</span>
                 <span>Total Terkumpul Periode Ini: <span id="total-iuran-nominal">Rp 0</span></span>
             </div>
-          <!-- ACTION BAR & FILTER SEJAJAR 1 BARIS -->
+
+            <!-- ACTION BAR & FILTER SEJAJAR 1 BARIS -->
             <div class="no-print top-action-bar">
                 <div class="filter-group-inline">
                     <label>📅 Periode:</label>
@@ -479,6 +506,14 @@
                 <div class="form-group">
                     <label>Nominal (Rp)</label>
                     <input type="number" id="iuran-nominal" placeholder="25000" min="1000" required>
+                    <!-- AKSES CEPAT NOMINAL IURAN -->
+                    <div class="quick-nominal">
+                        <button type="button" class="btn-quick" onclick="setNominal('iuran-nominal', 10000)">10rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('iuran-nominal', 20000)">20rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('iuran-nominal', 30000)">30rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('iuran-nominal', 40000)">40rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('iuran-nominal', 50000)">50rb</button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Keterangan / Catatan</label>
@@ -516,6 +551,14 @@
                 <div class="form-group">
                     <label>Nominal (Rp)</label>
                     <input type="number" id="peng-nominal" placeholder="50000" min="1000" required>
+                    <!-- AKSES CEPAT NOMINAL KAS -->
+                    <div class="quick-nominal">
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 10000)">10rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 20000)">20rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 30000)">30rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 40000)">40rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 50000)">50rb</button>
+                    </div>
                 </div>
             </div>
             <div style="display:flex; gap:10px;">
@@ -542,6 +585,11 @@
 
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    // FUNGSI ISI NOMINAL CEPAT
+    function setNominal(inputId, val) {
+      document.getElementById(inputId).value = val;
+    }
 
     function switchPage(page) {
       document.getElementById('nav-btn-iuran').classList.remove('active');
@@ -610,7 +658,6 @@
     }
 
     function filterDataBulan(e) {
-      // Sinkronisasi nilai dropdown antara halaman Iuran dan Kas
       const activeTab = document.querySelector('.page-content.active');
       const activeBulan = activeTab.querySelector('.select-bulan').value;
       const activeTahun = activeTab.querySelector('.select-tahun').value;
