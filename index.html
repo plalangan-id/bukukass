@@ -350,7 +350,7 @@
     <div id="page-iuran" class="page-content active">
         <div class="print-area">
             <div style="text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
-                <h1 style="font-size: 13pt; text-transform: uppercase;">REKAPITULASI PEMBAYARAN IURAN WARGA</h1>
+                <h1 style="font-size: 13pt; text-transform: uppercase;">REKAPITULASI PEMBAYARAN IURAN WARGA TAHUN 2026</h1>
                 <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
             </div>
 
@@ -363,10 +363,10 @@
             <div class="no-print top-action-bar">
                 <div class="filter-group-inline">
                     <label>📅 Periode:</label>
-                    <select class="select-bulan" onchange="filterDataBulan()"></select>
-                    <select class="select-tahun" onchange="filterDataBulan()"></select>
+                    <select class="select-bulan" onchange="filterDataBulan(event)"></select>
+                    <select class="select-tahun" onchange="filterDataBulan(event)"></select>
                 </div>
-                <button type="button" class="btn-action btn-print" onclick="window.print()">🖨️ Cetak / Save PDF</button>
+                <button type="button" class="btn-action btn-print" onclick="cetakLaporan('Iuran_Warga')">🖨️ Cetak / Save PDF</button>
             </div>
             <div class="columns-wrapper two-cols">
                 <div class="column">
@@ -400,7 +400,7 @@
             </div>
             <div class="signature-area">
                 <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
-                <div class="version-box">v1.2</div>
+                <div class="version-box">v1.3</div>
                 <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
             </div>
         </div>
@@ -410,7 +410,7 @@
     <div id="page-pengeluaran" class="page-content">
         <div class="print-area">
             <div style="text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
-                <h1 style="font-size: 13pt; text-transform: uppercase;">LAPORAN PEMBUKUAN KASS (MASUK / KELUAR)</h1>
+                <h1 style="font-size: 13pt; text-transform: uppercase;">LAPORAN PEMBUKUAN KASS (MASUK / KELUAR) TAHUN 2026</h1>
                 <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
             </div>
 
@@ -418,10 +418,10 @@
             <div class="no-print top-action-bar">
                 <div class="filter-group-inline">
                     <label>📅 Periode:</label>
-                    <select class="select-bulan" onchange="filterDataBulan()"></select>
-                    <select class="select-tahun" onchange="filterDataBulan()"></select>
+                    <select class="select-bulan" onchange="filterDataBulan(event)"></select>
+                    <select class="select-tahun" onchange="filterDataBulan(event)"></select>
                 </div>
-                <button type="button" class="btn-action btn-print" onclick="window.print()">🖨️ Cetak / Save PDF</button>
+                <button type="button" class="btn-action btn-print" onclick="cetakLaporan('Laporan_Kas')">🖨️ Cetak / Save PDF</button>
             </div>
 
             <div class="summary-box">
@@ -448,7 +448,7 @@
             </div>
             <div class="signature-area">
                 <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
-                <div class="version-box">v1.2</div>
+                <div class="version-box">v1.3</div>
                 <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
             </div>
         </div>
@@ -474,7 +474,7 @@
     </button>
     
     <button class="nav-item btn-nav-add-kas" onclick="openModal('modal-pengeluaran')">
-        <span class="nav-icon">🔄</span>
+        <span class="nav-icon">➕</span>
         <span>Mutasi</span>
     </button>
 </div>
@@ -581,6 +581,13 @@
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
 
+    // Kunci state periode terpilih (dipulihkan dari sessionStorage jika browser reload saat print)
+    const savedPeriode = JSON.parse(sessionStorage.getItem('periode_keuangan_warga'));
+    let periodeTerpilih = savedPeriode || {
+      bulan: new Date().getMonth(),
+      tahun: new Date().getFullYear()
+    };
+
     const formatRupiah = (val) => 'Rp ' + Number(val).toLocaleString('id-ID');
 
     function openModal(id) { document.getElementById(id).classList.add('active'); }
@@ -603,6 +610,7 @@
         document.getElementById('nav-btn-kas').classList.add('active');
         document.getElementById('page-pengeluaran').classList.add('active');
       }
+      filterDataBulan();
     }
 
     function initDropdownBulan() {
@@ -616,7 +624,7 @@
           const opt = document.createElement('option');
           opt.value = idx;
           opt.textContent = b;
-          if (idx === now.getMonth()) opt.selected = true;
+          if (idx === periodeTerpilih.bulan) opt.selected = true;
           selBulan.appendChild(opt);
         });
       });
@@ -628,7 +636,7 @@
           const opt = document.createElement('option');
           opt.value = y;
           opt.textContent = y;
-          if (y === currYear) opt.selected = true;
+          if (y === periodeTerpilih.tahun) opt.selected = true;
           selTahun.appendChild(opt);
         }
       });
@@ -658,21 +666,38 @@
     }
 
     function filterDataBulan(e) {
-      const activeTab = document.querySelector('.page-content.active');
-      const activeBulan = activeTab.querySelector('.select-bulan').value;
-      const activeTahun = activeTab.querySelector('.select-tahun').value;
+      if (e && e.target) {
+        const parentBar = e.target.closest('.top-action-bar');
+        periodeTerpilih.bulan = parseInt(parentBar.querySelector('.select-bulan').value);
+        periodeTerpilih.tahun = parseInt(parentBar.querySelector('.select-tahun').value);
+        sessionStorage.setItem('periode_keuangan_warga', JSON.stringify(periodeTerpilih));
+      }
 
-      document.querySelectorAll('.select-bulan').forEach(s => s.value = activeBulan);
-      document.querySelectorAll('.select-tahun').forEach(s => s.value = activeTahun);
+      document.querySelectorAll('.select-bulan').forEach(s => s.value = periodeTerpilih.bulan);
+      document.querySelectorAll('.select-tahun').forEach(s => s.value = periodeTerpilih.tahun);
 
-      const bIdx = parseInt(activeBulan);
-      const thn = parseInt(activeTahun);
+      const bIdx = periodeTerpilih.bulan;
+      const thn = periodeTerpilih.tahun;
       const strPeriode = `${namaBulanList[bIdx]} ${thn}`;
 
       document.querySelectorAll('.tgl-rekap').forEach(el => el.textContent = strPeriode);
 
       renderTabelIuran(bIdx, thn);
       renderTabelPengeluaran(bIdx, thn);
+    }
+
+    function cetakLaporan(jenisLaporan) {
+      const strPeriode = `${namaBulanList[periodeTerpilih.bulan]} ${periodeTerpilih.tahun}`;
+      document.querySelectorAll('.tgl-rekap').forEach(el => el.textContent = strPeriode);
+
+      const judulAsli = document.title;
+      document.title = `${jenisLaporan}_${namaBulanList[periodeTerpilih.bulan]}_${periodeTerpilih.tahun}`;
+
+      window.print();
+
+      setTimeout(() => {
+        document.title = judulAsli;
+      }, 1500);
     }
 
     function renderTabelIuran(blnIdx, thn) {
@@ -686,7 +711,7 @@
       const filteredIuran = transaksiIuranGlobal.filter(tx => {
         if (!tx[0]) return false;
         const d = new Date(tx[0]);
-        return d.getMonth() === blnIdx && d.getFullYear() === thn;
+        return !isNaN(d) && d.getMonth() === blnIdx && d.getFullYear() === thn;
       });
 
       filteredIuran.forEach(tx => {
@@ -696,10 +721,11 @@
       const midIndex = Math.ceil(daftarTampil.length / 2);
 
       daftarTampil.forEach((nama, idx) => {
-        const tx = filteredIuran.filter(t => t[1] === nama).pop();
-        const jenis = tx ? tx[2] : '-';
-        const nominal = tx ? Number(tx[3]) : 0;
-        const ket = (tx && tx[4]) ? tx[4] : '-';
+        // Mengakumulasi jika warga membayar lebih dari 1 kali dalam bulan yang sama
+        const txWarga = filteredIuran.filter(t => t[1] === nama);
+        const jenis = txWarga.length ? [...new Set(txWarga.map(t => t[2]).filter(Boolean))].join(', ') : '-';
+        const nominal = txWarga.reduce((sum, t) => sum + (Number(t[3]) || 0), 0);
+        const ket = txWarga.length ? (txWarga.map(t => t[4]).filter(Boolean).join(', ') || '-') : '-';
         totalAkumulasi += nominal;
 
         const rowHTML = `
@@ -728,19 +754,29 @@
       let totalKeluarBulanIni = 0;
       let saldoSisaAkumulasi = 0;
 
-      transaksiPengeluaranGlobal.forEach((tx) => {
+      // Urutkan transaksi berdasarkan tanggal (lama ke baru) agar saldo berjalan akurat
+      const sortedKas = [...transaksiPengeluaranGlobal]
+        .filter(tx => tx[0] && !isNaN(new Date(tx[0])))
+        .sort((a, b) => new Date(a[0]) - new Date(b[0]));
+
+      // Batas akhir bulan yang sedang dipilih agar transaksi bulan depan tidak ikut terhitung
+      const batasAkhirPeriode = new Date(thn, blnIdx + 1, 0, 23, 59, 59);
+
+      sortedKas.forEach((tx) => {
         const d = new Date(tx[0]);
         const masuk = Number(tx[2]) || 0;
         const keluar = Number(tx[3]) || 0;
 
-        saldoSisaAkumulasi += (masuk - keluar);
+        if (d <= batasAkhirPeriode) {
+          saldoSisaAkumulasi += (masuk - keluar);
+        }
 
         if (d.getMonth() === blnIdx && d.getFullYear() === thn) {
           totalMasukBulanIni += masuk;
           totalKeluarBulanIni += keluar;
 
           const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
-          const ket = tx[1];
+          const ket = tx[1] || '-';
 
           tbody.innerHTML += `
             <tr>
