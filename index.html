@@ -45,7 +45,7 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           margin-bottom: 12px;
           width: 100%;
         }
@@ -53,15 +53,17 @@
         .filter-group-inline {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 5px;
           background: #f1f5f9;
           padding: 4px 8px;
           border-radius: 8px;
           border: 1px solid var(--border-color);
+          flex: 1;
+          min-width: 0;
         }
 
         .filter-group-inline label {
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           font-weight: 700;
           color: var(--primary);
           margin-bottom: 0;
@@ -69,15 +71,40 @@
         }
 
         .filter-group-inline select {
-          padding: 5px 8px;
+          padding: 4px 6px;
           border-radius: 6px;
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           font-weight: 600;
           border: 1px solid #cbd5e1;
           background: #ffffff;
           color: #1e293b;
           outline: none;
           cursor: pointer;
+          min-width: 0;
+        }
+
+        /* TOMBOL CETAK LINGKARAN COMPACT */
+        .btn-print-circle {
+          width: 36px;
+          height: 36px;
+          min-width: 36px;
+          border-radius: 50%;
+          border: none;
+          background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+          box-shadow: 0 2.5px 0px #075985;
+          color: white;
+          font-size: 1rem;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-shrink: 0;
+          transition: all 0.1s ease;
+        }
+
+        .btn-print-circle:active {
+          transform: translateY(2px);
+          box-shadow: none !important;
         }
 
         button.btn-action {
@@ -96,10 +123,6 @@
           transition: all 0.1s ease;
         }
 
-        .btn-print { 
-          background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
-          box-shadow: 0 2.5px 0px #075985;
-        }
         .btn-save { 
           background: linear-gradient(180deg, #10b981 0%, #059669 100%);
           box-shadow: 0 3px 0px #047857;
@@ -350,7 +373,7 @@
     <div id="page-iuran" class="page-content active">
         <div class="print-area">
             <div style="text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
-                <h1 style="font-size: 13pt; text-transform: uppercase;">REKAPITULASI PEMBAYARAN IURAN WARGA TAHUN 2026</h1>
+                <h1 style="font-size: 13pt; text-transform: uppercase;">REKAPITULASI PEMBAYARAN IURAN WARGA</h1>
                 <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
             </div>
 
@@ -366,7 +389,7 @@
                     <select class="select-bulan" onchange="filterDataBulan(event)"></select>
                     <select class="select-tahun" onchange="filterDataBulan(event)"></select>
                 </div>
-                <button type="button" class="btn-action btn-print" onclick="cetakLaporan('Iuran_Warga')">🖨️ Cetak / Save PDF</button>
+                <button type="button" class="btn-print-circle" title="Cetak / Save PDF" onclick="cetakLaporan('Iuran_Warga')">🖨️</button>
             </div>
             <div class="columns-wrapper two-cols">
                 <div class="column">
@@ -400,7 +423,7 @@
             </div>
             <div class="signature-area">
                 <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
-                <div class="version-box">v1.3</div>
+                <div class="version-box">v1.4</div>
                 <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
             </div>
         </div>
@@ -410,7 +433,7 @@
     <div id="page-pengeluaran" class="page-content">
         <div class="print-area">
             <div style="text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 6px; margin-bottom: 8px;">
-                <h1 style="font-size: 13pt; text-transform: uppercase;">LAPORAN PEMBUKUAN KASS (MASUK / KELUAR) TAHUN 2026</h1>
+                <h1 style="font-size: 13pt; text-transform: uppercase;">LAPORAN PEMBUKUAN KASS (MASUK / KELUAR)</h1>
                 <p style="font-size: 8pt; color: #64748b;">Sistem Catatan Iuran & Kass Dsn.Plalangan | Periode: <span class="tgl-rekap"></span></p>
             </div>
 
@@ -421,7 +444,7 @@
                     <select class="select-bulan" onchange="filterDataBulan(event)"></select>
                     <select class="select-tahun" onchange="filterDataBulan(event)"></select>
                 </div>
-                <button type="button" class="btn-action btn-print" onclick="cetakLaporan('Laporan_Kas')">🖨️ Cetak / Save PDF</button>
+                <button type="button" class="btn-print-circle" title="Cetak / Save PDF" onclick="cetakLaporan('Laporan_Kas')">🖨️</button>
             </div>
 
             <div class="summary-box">
@@ -448,7 +471,7 @@
             </div>
             <div class="signature-area">
                 <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
-                <div class="version-box">v1.3</div>
+                <div class="version-box">v1.4</div>
                 <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
             </div>
         </div>
@@ -474,7 +497,7 @@
     </button>
     
     <button class="nav-item btn-nav-add-kas" onclick="openModal('modal-pengeluaran')">
-        <span class="nav-icon">➕</span>
+        <span class="nav-icon">🔄</span>
         <span>Mutasi</span>
     </button>
 </div>
@@ -721,7 +744,6 @@
       const midIndex = Math.ceil(daftarTampil.length / 2);
 
       daftarTampil.forEach((nama, idx) => {
-        // Mengakumulasi jika warga membayar lebih dari 1 kali dalam bulan yang sama
         const txWarga = filteredIuran.filter(t => t[1] === nama);
         const jenis = txWarga.length ? [...new Set(txWarga.map(t => t[2]).filter(Boolean))].join(', ') : '-';
         const nominal = txWarga.reduce((sum, t) => sum + (Number(t[3]) || 0), 0);
@@ -754,12 +776,10 @@
       let totalKeluarBulanIni = 0;
       let saldoSisaAkumulasi = 0;
 
-      // Urutkan transaksi berdasarkan tanggal (lama ke baru) agar saldo berjalan akurat
       const sortedKas = [...transaksiPengeluaranGlobal]
         .filter(tx => tx[0] && !isNaN(new Date(tx[0])))
         .sort((a, b) => new Date(a[0]) - new Date(b[0]));
 
-      // Batas akhir bulan yang sedang dipilih agar transaksi bulan depan tidak ikut terhitung
       const batasAkhirPeriode = new Date(thn, blnIdx + 1, 0, 23, 59, 59);
 
       sortedKas.forEach((tx) => {
