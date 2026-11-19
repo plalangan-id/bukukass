@@ -68,6 +68,9 @@
           color: var(--primary);
           margin-bottom: 0;
           white-space: nowrap;
+          display: flex;
+          align-items: center;
+          gap: 4px;
         }
 
         .filter-group-inline select {
@@ -93,7 +96,6 @@
           background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
           box-shadow: 0 2.5px 0px #075985;
           color: white;
-          font-size: 1rem;
           cursor: pointer;
           display: flex;
           justify-content: center;
@@ -108,17 +110,17 @@
         }
 
         button.btn-action {
-          padding: 6px 12px;
+          padding: 8px 12px;
           color: white;
           border: none;
           border-radius: 8px;
           font-weight: 700;
-          font-size: 0.8rem;
+          font-size: 0.85rem;
           cursor: pointer;
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 5px;
+          gap: 6px;
           white-space: nowrap;
           transition: all 0.1s ease;
         }
@@ -163,19 +165,17 @@
           flex-direction: row;
           align-items: center;
           justify-content: center;
-          gap: 4px;
+          gap: 5px;
           padding: 7px 4px;
           border: none;
           border-radius: 9px;
-          font-size: 0.7rem;
+          font-size: 0.72rem;
           font-weight: 700;
           cursor: pointer;
           color: white;
           text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
           transition: all 0.1s ease;
         }
-
-        .nav-item .nav-icon { font-size: 0.85rem; }
 
         .btn-nav-iuran {
           background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
@@ -262,7 +262,7 @@
           outline: none;
         }
 
-        /* AKSES CEPAT NOMINAL (MINI & COMPACT) */
+        /* AKSES CEPAT NOMINAL */
         .quick-nominal {
           display: flex;
           gap: 4px;
@@ -303,7 +303,9 @@
           border-radius: 6px;
           color: var(--primary);
         }
-        @media (min-width: 600px) { .summary-box { flex-direction: row; justify-content: space-between; } }
+        @media (min-width: 700px) { 
+          .summary-box { flex-direction: row; justify-content: space-between; align-items: center; } 
+        }
 
         .columns-wrapper { display: flex; flex-direction: column; gap: 0; }
         .column { width: 100%; }
@@ -325,11 +327,13 @@
         }
         table.data-table th { background: var(--primary); color: white; text-align: center; font-size: 8.5pt; font-weight: 600; }
         table.data-table tr:nth-child(even) { background: #f8fafc; }
+        table.data-table tr.row-saldo-awal { background: #e2e8f0 !important; font-style: italic; color: #1e293b; }
 
         .text-center { text-align: center !important; }
         .text-right { text-align: right !important; }
         .text-green { color: var(--accent); font-weight: bold; }
         .text-red { color: var(--danger); font-weight: bold; }
+        .text-blue { color: #2563eb; font-weight: bold; }
 
         .signature-area { 
           margin-top: 14px; 
@@ -385,12 +389,18 @@
             <!-- ACTION BAR & FILTER SEJAJAR 1 BARIS -->
             <div class="no-print top-action-bar">
                 <div class="filter-group-inline">
-                    <label>📅 Periode:</label>
+                    <label>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Periode:
+                    </label>
                     <select class="select-bulan" onchange="filterDataBulan(event)"></select>
                     <select class="select-tahun" onchange="filterDataBulan(event)"></select>
                 </div>
-                <button type="button" class="btn-print-circle" title="Cetak / Save PDF" onclick="cetakLaporan('Iuran_Warga')">🖨️</button>
+                <button type="button" class="btn-print-circle" title="Cetak / Save PDF" onclick="cetakLaporan('Iuran_Warga')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                </button>
             </div>
+
             <div class="columns-wrapper two-cols">
                 <div class="column">
                     <table class="data-table">
@@ -423,7 +433,7 @@
             </div>
             <div class="signature-area">
                 <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
-                <div class="version-box">v1.4</div>
+                <div class="version-box">v1.5</div>
                 <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
             </div>
         </div>
@@ -440,16 +450,22 @@
             <!-- ACTION BAR & FILTER SEJAJAR 1 BARIS -->
             <div class="no-print top-action-bar">
                 <div class="filter-group-inline">
-                    <label>📅 Periode:</label>
+                    <label>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Periode:
+                    </label>
                     <select class="select-bulan" onchange="filterDataBulan(event)"></select>
                     <select class="select-tahun" onchange="filterDataBulan(event)"></select>
                 </div>
-                <button type="button" class="btn-print-circle" title="Cetak / Save PDF" onclick="cetakLaporan('Laporan_Kas')">🖨️</button>
+                <button type="button" class="btn-print-circle" title="Cetak / Save PDF" onclick="cetakLaporan('Laporan_Kas')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                </button>
             </div>
 
             <div class="summary-box">
-                <span>Masuk Periode Ini: <span id="kas-total-masuk" class="text-green">Rp 0</span> | Keluar: <span id="kas-total-keluar" class="text-red">Rp 0</span></span>
-                <span>SISA SALDO KAS (AKUMULASI): <span id="kas-sisa-saldo">Rp 0</span></span>
+                <span>Saldo Bulan Lalu: <span id="kas-saldo-awal" class="text-blue">Rp 0</span></span>
+                <span>Masuk: <span id="kas-total-masuk" class="text-green">Rp 0</span> | Keluar: <span id="kas-total-keluar" class="text-red">Rp 0</span></span>
+                <span>SISA SALDO AKHIR: <span id="kas-sisa-saldo">Rp 0</span></span>
             </div>
 
             <div class="columns-wrapper">
@@ -471,7 +487,7 @@
             </div>
             <div class="signature-area">
                 <div class="sign-box">Mengetahui,<br>Ketua RT<div class="sign-space"></div>( ............................ )</div>
-                <div class="version-box">v1.4</div>
+                <div class="version-box">v1.5</div>
                 <div class="sign-box">Pengelola / Bendahara<div class="sign-space"></div>( ............................ )</div>
             </div>
         </div>
@@ -482,22 +498,22 @@
 <!-- BOTTOM NAVBAR 3D MINIMALIS -->
 <div class="bottom-nav no-print">
     <button class="nav-item btn-nav-iuran active" id="nav-btn-iuran" onclick="switchPage('iuran')">
-        <span class="nav-icon">📋</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
         <span>Iuran</span>
     </button>
     
     <button class="nav-item btn-nav-add-iuran" onclick="openModal('modal-iuran')">
-        <span class="nav-icon">➕</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         <span>Iuran</span>
     </button>
     
     <button class="nav-item btn-nav-kas" id="nav-btn-kas" onclick="switchPage('pengeluaran')">
-        <span class="nav-icon">💸</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
         <span>Kas</span>
     </button>
     
     <button class="nav-item btn-nav-add-kas" onclick="openModal('modal-pengeluaran')">
-        <span class="nav-icon">🔄</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
         <span>Mutasi</span>
     </button>
 </div>
@@ -545,7 +561,7 @@
             </div>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn-action btn-cancel" style="flex:1;" onclick="closeModal('modal-iuran')">Batal</button>
-                <button type="submit" class="btn-action btn-save" style="flex:1;" id="btn-save-iuran">💾 Simpan Data</button>
+                <button type="submit" class="btn-action btn-save" style="flex:1;" id="btn-save-iuran">Simpan Data</button>
             </div>
         </form>
     </div>
@@ -567,8 +583,8 @@
                 <div class="form-group">
                     <label>Jenis Transaksi</label>
                     <select id="peng-tipe" required>
-                        <option value="keluar">🔴 Pengeluaran (-)</option>
-                        <option value="masuk">🟢 Pemasukan (+)</option>
+                        <option value="keluar">Pengeluaran (-)</option>
+                        <option value="masuk">Pemasukan (+)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -578,15 +594,15 @@
                     <div class="quick-nominal">
                         <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 10000)">10rb</button>
                         <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 20000)">20rb</button>
-                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 30000)">30rb</button>
-                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 40000)">40rb</button>
                         <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 50000)">50rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 100000)">100rb</button>
+                        <button type="button" class="btn-quick" onclick="setNominal('peng-nominal', 200000)">200rb</button>
                     </div>
                 </div>
             </div>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn-action btn-cancel" style="flex:1;" onclick="closeModal('modal-pengeluaran')">Batal</button>
-                <button type="submit" class="btn-action btn-save" style="flex:1;" id="btn-save-peng">💾 Simpan Kas</button>
+                <button type="submit" class="btn-action btn-save" style="flex:1;" id="btn-save-peng">Simpan Kas</button>
             </div>
         </form>
     </div>
@@ -604,7 +620,6 @@
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
 
-    // Kunci state periode terpilih (dipulihkan dari sessionStorage jika browser reload saat print)
     const savedPeriode = JSON.parse(sessionStorage.getItem('periode_keuangan_warga'));
     let periodeTerpilih = savedPeriode || {
       bulan: new Date().getMonth(),
@@ -616,7 +631,6 @@
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    // FUNGSI ISI NOMINAL CEPAT
     function setNominal(inputId, val) {
       document.getElementById(inputId).value = val;
     }
@@ -772,54 +786,79 @@
       const tbody = document.getElementById('tabel-kas-body');
       tbody.innerHTML = '';
 
+      let saldoAwalBulanLalu = 0;
       let totalMasukBulanIni = 0;
       let totalKeluarBulanIni = 0;
-      let saldoSisaAkumulasi = 0;
 
       const sortedKas = [...transaksiPengeluaranGlobal]
         .filter(tx => tx[0] && !isNaN(new Date(tx[0])))
         .sort((a, b) => new Date(a[0]) - new Date(b[0]));
 
-      const batasAkhirPeriode = new Date(thn, blnIdx + 1, 0, 23, 59, 59);
+      const awalBulanIni = new Date(thn, blnIdx, 1, 0, 0, 0);
+      const akhirBulanIni = new Date(thn, blnIdx + 1, 0, 23, 59, 59);
 
+      // 1. Hitung total saldo sebelum bulan yang dipilih
       sortedKas.forEach((tx) => {
         const d = new Date(tx[0]);
-        const masuk = Number(tx[2]) || 0;
-        const keluar = Number(tx[3]) || 0;
-
-        if (d <= batasAkhirPeriode) {
-          saldoSisaAkumulasi += (masuk - keluar);
+        if (d < awalBulanIni) {
+          const masuk = Number(tx[2]) || 0;
+          const keluar = Number(tx[3]) || 0;
+          saldoAwalBulanLalu += (masuk - keluar);
         }
+      });
 
-        if (d.getMonth() === blnIdx && d.getFullYear() === thn) {
+      let saldoBerjalan = saldoAwalBulanLalu;
+
+      // 2. Baris pembuka: Saldo Awal Bulan Lalu
+      tbody.innerHTML += `
+        <tr class="row-saldo-awal">
+          <td class="text-center">-</td>
+          <td class="text-center">01/${String(blnIdx + 1).padStart(2, '0')}</td>
+          <td><b>Saldo Bulan Lalu </b></td>
+          <td class="text-right">-</td>
+          <td class="text-right">-</td>
+          <td class="text-right"><b>${formatRupiah(saldoBerjalan)}</b></td>
+        </tr>
+      `;
+
+      // 3. Tampilkan mutasi bulan yang dipilih
+      let nomorUrut = 1;
+      sortedKas.forEach((tx) => {
+        const d = new Date(tx[0]);
+        if (d >= awalBulanIni && d <= akhirBulanIni) {
+          const masuk = Number(tx[2]) || 0;
+          const keluar = Number(tx[3]) || 0;
+
           totalMasukBulanIni += masuk;
           totalKeluarBulanIni += keluar;
+          saldoBerjalan += (masuk - keluar);
 
           const tglStr = d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit' });
           const ket = tx[1] || '-';
 
           tbody.innerHTML += `
             <tr>
-              <td class="text-center">${tbody.children.length + 1}</td>
+              <td class="text-center">${nomorUrut++}</td>
               <td class="text-center">${tglStr}</td>
               <td><b>${ket}</b></td>
               <td class="text-right text-green">${masuk > 0 ? formatRupiah(masuk) : '-'}</td>
               <td class="text-right text-red">${keluar > 0 ? formatRupiah(keluar) : '-'}</td>
-              <td class="text-right"><b>${formatRupiah(saldoSisaAkumulasi)}</b></td>
+              <td class="text-right"><b>${formatRupiah(saldoBerjalan)}</b></td>
             </tr>
           `;
         }
       });
 
+      document.getElementById('kas-saldo-awal').textContent = formatRupiah(saldoAwalBulanLalu);
       document.getElementById('kas-total-masuk').textContent = formatRupiah(totalMasukBulanIni);
       document.getElementById('kas-total-keluar').textContent = formatRupiah(totalKeluarBulanIni);
-      document.getElementById('kas-sisa-saldo').textContent = formatRupiah(saldoSisaAkumulasi);
+      document.getElementById('kas-sisa-saldo').textContent = formatRupiah(saldoBerjalan);
     }
 
     document.getElementById('form-iuran').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-save-iuran');
-      btn.disabled = true; btn.textContent = "⏳ Menyimpan...";
+      btn.disabled = true; btn.textContent = "Menyimpan...";
 
       const payload = {
         mode: 'iuran',
@@ -831,18 +870,18 @@
 
       try {
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        alert("✅ Transaksi Iuran Warga Berhasil Disimpan!");
+        alert("Transaksi Iuran Warga Berhasil Disimpan!");
         document.getElementById('form-iuran').reset();
         closeModal('modal-iuran');
         setTimeout(loadData, 1000);
-      } catch (err) { alert("❌ Gagal menyimpan."); }
-      finally { btn.disabled = false; btn.textContent = "💾 Simpan Data"; }
+      } catch (err) { alert("Gagal menyimpan."); }
+      finally { btn.disabled = false; btn.textContent = "Simpan Data"; }
     });
 
     document.getElementById('form-pengeluaran').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btn-save-peng');
-      btn.disabled = true; btn.textContent = "⏳ Menyimpan...";
+      btn.disabled = true; btn.textContent = "Menyimpan...";
 
       const payload = {
         mode: 'pengeluaran',
@@ -853,12 +892,12 @@
 
       try {
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        alert("✅ Transaksi Kas Berhasil Disimpan!");
+        alert("Transaksi Kas Berhasil Disimpan!");
         document.getElementById('form-pengeluaran').reset();
         closeModal('modal-pengeluaran');
         setTimeout(loadData, 1000);
-      } catch (err) { alert("❌ Gagal menyimpan."); }
-      finally { btn.disabled = false; btn.textContent = "💾 Simpan Kas"; }
+      } catch (err) { alert("Gagal menyimpan."); }
+      finally { btn.disabled = false; btn.textContent = "Simpan Kas"; }
     });
 
     initDropdownBulan();
